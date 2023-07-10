@@ -13,7 +13,9 @@
     "vue": "^3.2.47"
   },
   "devDependencies": {
+    "@types/dat.gui": "^0.7.10",
     "@vitejs/plugin-vue": "^4.1.0",
+    "dat.gui": "^0.7.9",
     "typescript": "^5.0.2",
     "vite": "^4.3.9",
     "vite-plugin-earth": "^2.1.2",
