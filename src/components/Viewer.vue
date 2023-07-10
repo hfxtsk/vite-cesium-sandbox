@@ -3,8 +3,16 @@ import { onMounted, provide, ref } from 'vue';
 import * as Cesium from 'cesium';
 const slotShow = ref(false);
 onMounted(() => {
+  // 设置地球默认区域为中国
+  Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(
+    90,
+    -20,
+    110,
+    90
+  );
   // 初始化viewer
   const viewer = new Cesium.Viewer('cesiumContainer', {});
+
   // 将viewer传递给子组件
   provide('viewer', viewer);
   // 加载子组件
