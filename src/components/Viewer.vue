@@ -11,7 +11,9 @@ onMounted(() => {
     90
   );
   // 初始化viewer
-  const viewer = new Cesium.Viewer('cesiumContainer', {});
+  const viewer = new Cesium.Viewer('cesiumContainer', {
+    animation: true,
+  });
 
   // 将viewer传递给子组件
   provide('viewer', viewer);
