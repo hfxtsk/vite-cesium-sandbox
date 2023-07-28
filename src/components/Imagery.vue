@@ -10,7 +10,7 @@ const imageryLayers = viewer.imageryLayers;
 console.log(viewer.baseLayerPicker.viewModel.imageryProviderViewModels);
 
 
-let imagery: Map<string, Cesium.ImageryProvider> = new Map();
+let imagery: Map<string, Cesium.ImageryProvider | Function> = new Map();
 
 // arcgis
 const arcgis_img = await Promise.resolve(Cesium.ArcGisMapServerImageryProvider.fromUrl(
@@ -139,14 +139,29 @@ imagery.set('xt_img', xt_img);
 imagery.set('xt_cia', xt_cia);
 imagery.set('xt_vec', xt_vec);
 
+// 谷歌
+imagery.set('google_img', async () => {
+    const geeMetadata = Cesium.GoogleEarthEnterpriseMetadata.fromUrl(
+        new Cesium.Resource({
+            url: "http://www.earthenterprise.org/3d",
+            proxy: new Cesium.DefaultProxy("/proxy/"),
+        })
+    );
+    const google_img = new Cesium.ImageryLayer(
+        Cesium.GoogleEarthEnterpriseImageryProvider.fromMetadata(await geeMetadata, {}), {}
+    );
+
+    viewer.scene.imageryLayers.add(google_img);
+
+    imageryLayers.raiseToTop(google_img)
+});
+
+// Bing
+// 百度
+
 
 // 默认底图
 imageryLayers.addImageryProvider(xt_img);
-
-// 谷歌
-// Bing
-// 百度
-// 
 
 const options = {
     imagery: 'xt_img', // 自转
@@ -161,25 +176,38 @@ gui
         '星图影像': 'xt_img', '星图注记': 'xt_cia', '星图电子': 'xt_vec',
         '高德电子': 'gd_vec', '高德影像': 'gd_img', '高德注记': 'gd_cva',
         '天地图影像': 'tdt_img', '天地图影像标注': 'tdt_cia', '天地图电子': 'tdt_vec', '天地图电子标注': 'tdt_cva',
-        '腾讯影像': 'tx_img', "ArcGis电子+街道": "arcgis_img"
+        '腾讯影像': 'tx_img', "ArcGis电子+街道": "arcgis_img",
+        "Google影像": "google_img"
     })
     .name('图层选择')
     .onFinishChange((key: string) => {
-        const provider = imagery.get(key) as Cesium.ImageryProvider
         // 判断图层是否存在
         let raiseImageryLayer = null;
-        for (var i = 0; i < imageryLayers.length; i++) {
-            var layer = imageryLayers.get(i);
-            if (layer.imageryProvider == provider) {
-                // 如果Imagery存在，则将其置顶
-                raiseImageryLayer = layer;
+
+        const current = imagery.get(key);
+
+        console.log(current, typeof current)
+
+        if (current instanceof Function) {
+            current()
+        } else {
+            const provider = current as Cesium.ImageryProvider
+
+            for (var i = 0; i < imageryLayers.length; i++) {
+                var layer = imageryLayers.get(i);
+                if (layer.imageryProvider == provider) {
+                    // 如果Imagery存在，则将其置顶
+                    raiseImageryLayer = layer;
+                }
+            }
+
+            if (!raiseImageryLayer) {
+                imageryLayers.addImageryProvider(provider);
             }
         }
 
         if (raiseImageryLayer) {
             imageryLayers.raiseToTop(raiseImageryLayer)
-        } else {
-            imageryLayers.addImageryProvider(provider);
         }
     });
 
