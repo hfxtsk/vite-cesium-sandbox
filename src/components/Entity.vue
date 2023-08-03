@@ -2,8 +2,6 @@
 import { inject, onUnmounted } from 'vue';
 import * as Cesium from "cesium";
 import * as dat from 'dat.gui';
-import { EntityCollection } from 'cesium';
-
 
 const viewer = inject('viewer') as Cesium.Viewer;
 // 地球照明效果
