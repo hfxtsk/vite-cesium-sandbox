@@ -10,6 +10,9 @@ onMounted(() => {
     110,
     90
   );
+  // 申请token：https://ion.cesium.com/
+  Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0MmZmYjYwNS1lMjMwLTQ1YjQtODRkMC1jYTViMzQxMjllNWUiLCJpZCI6NTU4MzQsImlhdCI6MTYyMDk1NzI2NX0.g3__wwgLWnGdMqlD6SnLzrRLCA2lHT65TEQCSeZVEyc';
+
   // 初始化viewer
   const viewer = new Cesium.Viewer('cesiumContainer', {
     animation: true,
