@@ -17,6 +17,7 @@ onMounted(() => {
   const viewer = new Cesium.Viewer('cesiumContainer', {
     animation: true,
     shouldAnimate: true,
+    scene3DOnly:true
   });
 
   // 将viewer传递给子组件
